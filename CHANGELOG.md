@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [0.1.1] - 2026-11-06
+### 新增
+- README.md：類別說明、完整流程圖、分工、自己重跑的步驟
+- .gitignore：data/、runs/、權重檔不進 git
+- 建立 git（main、develop 分支），準備推到 GitHub
+### 變更
+- 分工調整：組員各標一包；訓練、結果整理、報告由 1 號完成，再提供流程給組員自行重跑
+
 ## [0.1.0] - 2026-11-05
 ### 新增
 - 建立專案資料夾與設定檔（dataset_config.yaml、picked_images.yaml）

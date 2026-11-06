@@ -26,6 +26,8 @@
 YOLO 壽司辨識/
 ├── CLAUDE.md
 ├── CHANGELOG.md
+├── README.md                # 給組員看的流程與重跑步驟
+├── .gitignore               # data/、runs/ 不進 git
 ├── download_sushi.py        # 進入點：只下載 Food-101 壽司類
 ├── make_contact_sheet.py    # 進入點：產生編號預覽拼圖，供人工挑圖
 ├── split_batches.py         # 進入點：依挑選清單分成 4 包標註包
@@ -61,11 +63,13 @@ Food-101 parquet → download_sushi.py → data/food101_sushi → 人工看拼�
 ## 專案管理備註
 - 作業要求自行標註：不可使用 Roboflow Auto-Label，Claude 只能示範不可代標
 - 截止：2026-11-05（週四），時間待確認
+- 分工（2026-11-06 調整）：組員各標一包；訓練、結果、報告由 1 號（使用者）完成，再給組員流程（README）自行重跑
+- Git：main + develop，日常 commit 在 develop
 
 ## 變更日誌
 詳見 [CHANGELOG.md](CHANGELOG.md)
 
 ---
-**文檔版本**：v0.1.0
+**文檔版本**：v0.1.1
 **建立日期**：2026-11-05
-**最後更新**：2026-11-05（建立專案、完成挑圖與上傳）
+**最後更新**：2026-11-06（新增 README、.gitignore、git；調整分工）
