@@ -57,7 +57,7 @@ Food-101 parquet → download_sushi.py → data/food101_sushi → 人工看拼�
 | Roboflow 專案與 4 個類別 | 完成 |
 | 上傳 4 包各 25 張 | 完成 |
 | 組員加入工作區、指派批次 | 待辦 |
-| 標註 | 待辦 |
+| 標註 | batch_1 完成（2026-11-06，212 框：roll 155、salmon 20、tuna 19、shrimp 18），batch_2～4 待組員 |
 | 匯出與訓練 | 待辦 |
 
 ## 專案管理備註

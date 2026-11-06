@@ -4,7 +4,9 @@
 ### 新增
 - README.md：類別說明、完整流程圖、分工、自己重跑的步驟
 - .gitignore：data/、runs/、權重檔不進 git
-- 建立 git（main、develop 分支），準備推到 GitHub
+- 建立 git（main、develop 分支），推到 GitHub（ee7770129/yolo-sushi-detection）
+- batch_1 標註完成：25 張、212 框（roll 155、salmon 20、tuna 19、shrimp 18），未使用 Auto-Label
+- 類別對照圖 data/reference/class_reference.jpg（不進 git）
 ### 變更
 - 分工調整：組員各標一包；訓練、結果整理、報告由 1 號完成，再提供流程給組員自行重跑
 
