@@ -1,0 +1,27 @@
+# 請以繁體中文產生程式碼註解。請務必保持 UTF-8 編碼。
+#
+# 檔案名稱：壽司資料集設定
+# 功能說明：從 Hugging Face 的 Food-101 只下載壽司類圖片，並設定挑圖、預覽拼圖的參數。
+# 建立日期：2026-11-05
+# 版本號：v0.1.0
+
+# Food-101 的 parquet 檔網址樣板，{split} 為 train/validation，{shard} 為分片編號
+parquet_url_template: "https://huggingface.co/api/datasets/ethz/food101/parquet/default/{split}/{shard}.parquet"
+split: validation
+shards: [0, 1, 2]
+sushi_label: 95          # Food-101 類別編號：95 = sushi
+max_images: 250          # 最多下載幾張
+request_timeout_secs: 120
+
+# 下載位置（相對於專案根目錄）
+download_dir: data/food101_sushi
+
+# 預覽拼圖：每張拼圖幾張小圖、每格大小（像素）
+contact_sheet:
+  per_sheet: 25
+  columns: 5
+  cell_size: 300
+  output_dir: data/contact_sheets
+
+# 標註類別（Roboflow 專案也用同樣名稱）
+classes: [salmon, tuna, shrimp, roll]

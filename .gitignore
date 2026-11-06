@@ -1,0 +1,11 @@
+# 圖片與資料集（體積大且有版權，用程式重新產生）
+data/
+
+# 訓練輸出
+runs/
+*.pt
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
