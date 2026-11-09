@@ -4,8 +4,12 @@ data/
 # 訓練輸出
 runs/
 *.pt
+*.log
 
 # Python
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+
+# Office 開檔暫存
+~$*

@@ -26,11 +26,12 @@ Food-101 原本只有「sushi」一個類別，我們自己把壽司細分成 4 
       ↓
 3. 分包        分 4 包各 25 張，兩種圖平均分配（split_batches.py）
       ↓
-4. 標註        上傳 Roboflow，4 位組員各標一包
+4. 標註        上傳 Roboflow，4 包各 25 張，全部人工框（不用 Auto-Label）
       ↓
-5. 產生資料集  訓練 70% / 驗證 20% / 測試 10%，縮放 640，翻轉與亮度增強
+5. 產生資料集  （Roboflow 網頁操作，見下方「Roboflow 操作流程」）
+               訓練 70% / 驗證 20% / 測試 10%，縮放 640
       ↓
-6. 匯出        YOLOv8 格式
+6. 匯出        YOLOv8 格式 zip，解壓到 data/dataset/
       ↓
 7. 訓練        YOLOv8n，本機 GPU
       ↓
@@ -39,14 +40,39 @@ Food-101 原本只有「sushi」一個類別，我們自己把壽司細分成 4 
 9. 報告與展示
 ```
 
+### Roboflow 操作流程
+
+```
+專案 sushi-type → Annotate
+      ↓
+點某一包（batch_1～4）→ 選「Label Manually」（不要選 Auto-Label）
+      ↓
+進入標註畫面，每張圖：
+   按 B 選方框工具 → 拖曳框住一貫壽司 → 選類別（roll / salmon / shrimp / tuna）
+   → 這張框完按右上「>」換下一張
+      ↓
+25 張標完 → 回 Annotate，點該包 → Annotated 分頁 → 「Add N Images To Dataset」
+   分配方式：Split Images Between Train/Valid/Test，比例 70 / 20 / 10
+      ↓
+4 包都加完，Dataset 共 98 張（2 張不收：sushi_225 沒有目標類別、
+   sushi_236 疊太密框不準）
+      ↓
+Versions → Create New Version
+   Preprocessing：Auto-Orient、Resize 改成 Stretch to 640×640
+   Augmentation：不加（翻轉、亮度變化交給 YOLO 訓練時自動做，不花 Roboflow 額度）
+   → Create，得到版本 v1
+      ↓
+v1 → Download Dataset → 格式選 YOLOv8 → Download zip to computer
+      ↓
+解壓到專案的 data/dataset/（裡面有 data.yaml、train/、valid/、test/）
+```
+
 ## 分工
 
 | 組員 | 工作 |
 |------|------|
-| 1 號 | batch_1 標註、資料準備、訓練、結果整理、報告 |
-| 2 號 | batch_2 標註 |
-| 3 號 | batch_3 標註 |
-| 4 號 | batch_4 標註 |
+| 1 號 | batch_1～4 標註、資料準備、訓練、結果整理、報告（因時間關係先全部完成） |
+| 2～4 號 | 依本 README 自行重跑一次流程練習（另開練習專案，不影響正式資料） |
 
 ## 自己跑一次
 
@@ -67,11 +93,14 @@ Roboflow 專案 sushi-type → Versions → Download Dataset → 格式選 YOLOv
 
 ### 4. 訓練與評估
 ```
-yolo detect train data=data/dataset/data.yaml model=yolov8n.pt epochs=50 imgsz=640
-yolo detect val   model=runs/detect/train/weights/best.pt data=data/dataset/data.yaml
-yolo detect predict model=runs/detect/train/weights/best.pt source=data/dataset/test/images
+python train.py      # 訓練，參數在 configs/train_config.yaml
+python evaluate.py   # 驗證集＋測試集成績、預測示意圖
 ```
-結果會在 `runs/detect/` 裡（results.png、confusion_matrix.png、預測圖）。
+結果會在 `runs/detect/` 裡：
+- `sushi_v1/`：權重（weights/best.pt）、訓練曲線 results.png、混淆矩陣、標註拼貼圖
+- `sushi_v1_val/`、`sushi_v1_test/`：各切分的評估圖
+- `sushi_v1_metrics.csv`：每個類別的 precision / recall / mAP
+- `sushi_v1_predict/`：測試圖的預測結果
 
 ## 專案結構
 
@@ -79,9 +108,18 @@ yolo detect predict model=runs/detect/train/weights/best.pt source=data/dataset/
 ├── download_sushi.py        # 只下載 Food-101 壽司類
 ├── make_contact_sheet.py    # 產生編號預覽拼圖
 ├── split_batches.py         # 分成 4 包標註包
+├── train.py                 # 訓練 YOLOv8n
+├── evaluate.py              # 評估＋預測示意圖
+├── train_config_loader.py   # 讀訓練設定（共用）
 ├── configs/
 │   ├── dataset_config.yaml  # 下載、拼圖、類別設定
-│   └── picked_images.yaml   # 人工挑選清單
+│   ├── picked_images.yaml   # 人工挑選清單
+│   └── train_config.yaml    # 訓練與評估參數
+├── report/
+│   ├── 壽司辨識_報告.pptx    # 期末報告簡報
+│   ├── make_assets.py       # 整理簡報用圖片
+│   ├── build_pptx.js        # 產生簡報（npm install pptxgenjs）
+│   └── screenshots/         # Roboflow 截圖
 ├── dataset/
 │   └── http_range_file.py   # HTTP Range 分段讀檔
 └── data/                    # 圖片與資料集（不放進 git，用程式重新產生）

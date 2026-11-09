@@ -1,0 +1,37 @@
+# 請以繁體中文產生程式碼註解。請務必保持 UTF-8 編碼。
+#
+# 檔案名稱：訓練與評估設定
+# 功能說明：train.py、evaluate.py 共用的參數。路徑都相對於專案根目錄。
+# 建立日期：2026-11-08
+# 版本號：v0.1.0
+
+# 資料集（Roboflow 匯出的 YOLOv8 格式，解壓在這裡）
+data_yaml: data/dataset/data.yaml
+
+# 預訓練權重（第一次執行會由 ultralytics 自動下載官方 yolov8n.pt）
+model: yolov8n.pt
+
+# 訓練參數
+train:
+  epochs: 150          # 50 輪時 mAP 仍在上升（2026-11-08），加到 150
+  imgsz: 640
+  batch: 16
+  device: 0            # 0 = 第一張 GPU；沒有 GPU 改成 cpu
+  workers: 2           # Windows 上設小一點比較穩
+  seed: 0
+  patience: 40        # 驗證分數連續幾輪沒進步就提早停
+  # 資料擴增：Roboflow 沒加，改由 YOLO 訓練時即時做
+  fliplr: 0.5          # 左右翻轉機率
+  hsv_v: 0.4           # 亮度變化幅度
+  hsv_s: 0.5           # 飽和度變化幅度
+
+# 輸出位置
+project: runs/detect
+name: sushi_v1
+
+# 評估與預測示意圖
+evaluate:
+  splits: [val, test]  # 測試集沒有 tuna，所以驗證集也一起報告
+  conf: 0.25           # 預測示意圖的信心門檻
+  predict_source: data/dataset/test/images
+  predict_name: sushi_v1_predict

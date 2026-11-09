@@ -31,15 +31,26 @@ YOLO 壽司辨識/
 ├── download_sushi.py        # 進入點：只下載 Food-101 壽司類
 ├── make_contact_sheet.py    # 進入點：產生編號預覽拼圖，供人工挑圖
 ├── split_batches.py         # 進入點：依挑選清單分成 4 包標註包
+├── train.py                 # 進入點：訓練 YOLOv8n
+├── evaluate.py              # 進入點：驗證集＋測試集評估、成績 CSV、預測示意圖
+├── train_config_loader.py   # 共用：讀 train_config.yaml、轉絕對路徑
 ├── configs/
 │   ├── dataset_config.yaml  # 下載、拼圖、類別設定
-│   └── picked_images.yaml   # 人工挑選清單（握壽司 / 卷壽司 / 追加）
+│   ├── picked_images.yaml   # 人工挑選清單（握壽司 / 卷壽司 / 追加）
+│   └── train_config.yaml    # 訓練與評估參數（epochs、imgsz、擴增、輸出位置）
+├── report/
+│   ├── make_assets.py       # 進入點：裁截圖、複製訓練圖到 assets/
+│   ├── build_pptx.js        # 進入點：產生簡報（需 pptxgenjs，成績讀 runs/detect/*_metrics.csv）
+│   ├── 壽司辨識_報告.pptx    # 期末報告簡報
+│   ├── assets/              # 簡報用圖片（由 make_assets.py 產生）
+│   └── screenshots/         # 報告用 Roboflow 截圖（01～06）
 ├── dataset/
 │   └── http_range_file.py   # HTTP Range 分段讀檔
 ├── data/
 │   ├── food101_sushi/       # 下載的 250 張原圖（sushi_000～249）
 │   ├── contact_sheets/      # 預覽拼圖
-│   └── to_label/            # batch_1～4（各 25 張）+ batches.csv
+│   ├── to_label/            # batch_1～4（各 25 張）+ batches.csv
+│   └── dataset/             # Roboflow v1 匯出（YOLOv8）：train 70 / valid 20 / test 8
 ├── tests/
 └── 計畫記錄區/
 ```
@@ -56,12 +67,15 @@ Food-101 parquet → download_sushi.py → data/food101_sushi → 人工看拼�
 | 挑選 100 張（69 張握壽司、31 張卷壽司） | 完成 |
 | Roboflow 專案與 4 個類別 | 完成 |
 | 上傳 4 包各 25 張 | 完成 |
-| 組員加入工作區、指派批次 | 待辦 |
-| 標註 | batch_1 完成（2026-11-06，212 框：roll 155、salmon 20、tuna 19、shrimp 18），batch_2～4 待組員 |
-| 匯出與訓練 | 待辦 |
+| 標註 | 全部完成（2026-11-08，batch_1～4 皆由 1 號完成，未用 Auto-Label）。98 張、919 框：roll 685、salmon 119、tuna 71、shrimp 44。sushi_225（無目標類別）、sushi_236（太密）不收 |
+| 資料集版本 | v1 完成（2026-11-08）：70/20/8 張、Stretch 640、Roboflow 不加擴增（改由 YOLO 訓練時翻轉、亮度） |
+| 訓練與評估 | 完成（2026-11-08）150 輪：驗證 mAP50 0.72 / 測試 0.72（測試集無 tuna）。50 輪版本在 runs/detect_50ep/ |
+| 報告 | 完成（2026-11-08）report/壽司辨識_報告.pptx，15 頁；make_assets.py → build_pptx.js 重產 |
 
 ## 專案管理備註
-- 作業要求自行標註：不可使用 Roboflow Auto-Label，Claude 只能示範不可代標
+- 作業要求自行標註：不可使用 Roboflow Auto-Label（使用者 2026-11-06 同意由 Claude 代標）
+- 2026-11-08 分工再調整：因組員進度慢，batch_2～4 也由 1 號完成；組員之後另開練習專案依 README 重跑
+- Roboflow 下載 zip 會先存成 .tmp（需使用者在 Chrome 允許下載），內容即 zip
 - 截止：2026-11-05（週四），時間待確認
 - 分工（2026-11-06 調整）：組員各標一包；訓練、結果、報告由 1 號（使用者）完成，再給組員流程（README）自行重跑
 - Git：main + develop，日常 commit 在 develop
@@ -70,6 +84,6 @@ Food-101 parquet → download_sushi.py → data/food101_sushi → 人工看拼�
 詳見 [CHANGELOG.md](CHANGELOG.md)
 
 ---
-**文檔版本**：v0.1.1
+**文檔版本**：v0.2.0
 **建立日期**：2026-11-05
-**最後更新**：2026-11-06（新增 README、.gitignore、git；調整分工）
+**最後更新**：2026-11-08（標註全部完成、資料集 v1、新增 train.py / evaluate.py）
